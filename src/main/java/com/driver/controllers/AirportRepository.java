@@ -40,35 +40,23 @@ public class AirportRepository {
 
     public  int getNumberOfPeopleOn(Date date, String airportName) {
 
-        int count=0;
-
-        for(Integer i: flightHashMap.keySet()){
-            Flight temp=flightHashMap.get(i);
-            City city=airportHashMap.get(airportName).getCity();
-            if(temp.getFlightDate()==date && temp.getFromCity()==city){
-                count++;
+        int pans  = 0;
+        for(String a : airportHashMap.keySet()){
+            if(a.equals(airportName)){
+                Airport airport  = airportHashMap.get(a);
+                City city  = airport.getCity();
+                for(Integer i : bookingHashMap.keySet()){
+                    Flight f = flightHashMap.get(i);
+                    if(f.getToCity()==city||f.getFromCity()==city){
+                        if(date.compareTo(f.getFlightDate())==0) {
+                            List<Integer> al  = bookingHashMap.get(i);
+                            pans += al.size();
+                        }
+                    }
+                }
             }
-            Date originalDateTime = temp.getFlightDate(); // Replace this with your actual date
-
-            // Example duration in double (2.5 hours)
-            double durationInDouble = temp.getDuration();
-
-            // Convert the double duration to seconds
-            long durationInSeconds = (long) (durationInDouble * 3600);
-
-            // Add the duration to the original date and time
-            Date modifiedDateTime = Date.from(originalDateTime.toInstant().plusSeconds(durationInSeconds));
-
-            if(modifiedDateTime.equals(date) &&temp.getToCity()==city){
-                count++;
-            }
-
-
-
-
         }
-        return count;
-
+        return pans;
     }
 
     public String bookATicket(Integer flightId, Integer passengerId) {
