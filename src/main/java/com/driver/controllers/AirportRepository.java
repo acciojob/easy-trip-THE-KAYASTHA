@@ -7,6 +7,8 @@ import com.driver.model.Flight;
 import com.driver.model.Passenger;
 import org.springframework.stereotype.Repository;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -42,10 +44,25 @@ public class AirportRepository {
 
         for(Integer i: flightHashMap.keySet()){
             Flight temp=flightHashMap.get(i);
-
-            if(temp.getFlightDate()==date &&(temp.getToCity()==airportHashMap.get(airportName).getCity()||temp.getFromCity()==airportHashMap.get(airportName).getCity())){
+            City city=airportHashMap.get(airportName).getCity();
+            if(temp.getFlightDate()==date && temp.getFromCity()==city){
                 count++;
             }
+            Date originalDateTime = temp.getFlightDate(); // Replace this with your actual date
+
+            // Example duration in double (2.5 hours)
+            double durationInDouble = temp.getDuration();
+
+            // Convert the double duration to seconds
+            long durationInSeconds = (long) (durationInDouble * 3600);
+
+            // Add the duration to the original date and time
+            Date modifiedDateTime = Date.from(originalDateTime.toInstant().plusSeconds(durationInSeconds));
+
+            if(modifiedDateTime.equals(date) &&temp.getToCity()==city){
+                count++;
+            }
+
 
 
 
